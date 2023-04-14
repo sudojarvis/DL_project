@@ -80,7 +80,7 @@ def _data_pair():
 
 
 def generate_vocab():
-     passs
+     pass
   
 
 
@@ -88,9 +88,9 @@ def generate_vocab():
 
 # del_file()
                     
-# _data_pair()    
+_data_pair()    
 
-generate_vocab()
+# generate_vocab()
 
 
                 
