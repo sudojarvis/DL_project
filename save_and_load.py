@@ -4,6 +4,8 @@ def  save_data(all_source_hold,all_target_hold):
     with open('train', 'w',encoding='utf-8') as source_file:
         for item in all_source_hold:
             source_file.write("%s" % item+'\n')
+            json.dump(json.loads(item),source_file,ensure_ascii=False)
+            source_file.write('\n')
     # source_file.close()      
     
     with open('target', 'w' ,encoding='utf-8') as target_file:
@@ -18,11 +20,11 @@ def  save_data(all_source_hold,all_target_hold):
 def  load_data():
 
     with open('train', 'r') as source_file:
-        all_source_hold = source_file.read().split()
+        all_source_hold = source_file.read()
     # source_file.close()
 
     with open('target', 'r') as target_file:
-        all_target_hold = target_file.read().split()
+        all_target_hold = target_file.read()
     # target_file.close()
 
 

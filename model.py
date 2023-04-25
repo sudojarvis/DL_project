@@ -124,6 +124,44 @@ class Seq2Seq(nn.Module):
     
 
 
+
+# from save_and_load import load_train_data, load_test_data
+# train=list(load_train_data())
+# test=load_test_data()
+
+
+with open('train_source', 'r') as f:
+    train_source = f.readlines()
+
+tokenized_data=[]
+
+for sentences in train_source:
+    for character in sentences:
+        tokenized_data.append(character)
+
+# print (tokenized_data)
+
+from collections import Counter
+
+token_counts = Counter([token for character in tokenized_data for token in character])
+
+# print (len(token_counts))
+
+token_to_index={token: index for index, token in enumerate(token_counts)}
+
+# print (token_to_index)  
+
+from torchtext.vocab import Vocab
+
+vocab = Vocab(token_counts, specials=['<unk>', '<pad>', '<bos>', '<eos>'])
+
+# print (vocab)
+
+
+
+print (vocab['<unk>'])
+
+
 from collections import Counter
 
 tokenize = lambda x: x.split()

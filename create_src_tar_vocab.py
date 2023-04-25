@@ -14,6 +14,9 @@ counter_character_source = Counter()
 counter_character_target = Counter()
 
 
+def token_count():
+    pass
+
 
 for item in all_source_hold:
     
@@ -35,3 +38,5 @@ def save_vocab_target(counter_character_target):
 
 save_vocab_source(counter_character_source)
 save_vocab_target(counter_character_target)
+
+
