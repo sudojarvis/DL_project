@@ -123,3 +123,39 @@ class Seq2Seq(nn.Module):
         return outputs
     
 
+
+from collections import Counter
+
+tokenize = lambda x: x.split()
+
+def build_vocab(sentences, min_freq=2):
+    word_counts = Counter()
+    for sentence in sentences:
+        for word in tokenize(sentence):
+            word_counts[word] += 1
+    vocab = [word for word, count in word_counts.items() if count >= min_freq]
+    return vocab
+
+def build_dataset(sentences, vocab):
+
+    word2idx = {word: idx for idx, word in enumerate(vocab)}
+    idx2word = {idx: word for idx, word in enumerate(vocab)}
+    sentences = [[word2idx[word] for word in tokenize(sentence)] for sentence in sentences]
+    return sentences, word2idx, idx2word
+
+def pad_sequence(sequences, pad_token=0):
+
+    max_len = max([len(seq) for seq in sequences])
+    return [seq + [pad_token] * (max_len - len(seq)) for seq in sequences]
+
+
+def collate_fn(batch):
+
+    source, target = zip(*batch)
+    source = pad_sequence(source)
+    target = pad_sequence(target)
+    source = torch.LongTensor(source)
+    target = torch.LongTensor(target)
+    return source, target
+
+
