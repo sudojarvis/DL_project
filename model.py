@@ -135,6 +135,26 @@ with open('train_source', 'r') as f:
 
 tokenized_data=[]
 
+with open('train_target', 'r') as f:
+    train_target = f.readlines()
+
+
+
+from torch.utils.data import Dataset, DataLoader
+
+class CustomDataset(Dataset):
+    def __init__(self, source, target):
+        self.source = source
+        self.target = target
+
+    def __len__(self):
+        return len(self.source)
+
+    def __getitem__(self, idx):
+        return self.source[idx], self.target[idx]
+
+
+
 for sentences in train_source:
     for character in sentences:
         tokenized_data.append(character)
@@ -155,45 +175,34 @@ from torchtext.vocab import Vocab
 
 vocab = Vocab(token_counts, specials=['<unk>', '<pad>', '<bos>', '<eos>'])
 
-# print (vocab)
+# print (vocab['<pad>'])
 
+# after conveting toekinzed data to index data we need to convert it to tensor
 
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+import random
 
-print (vocab['<unk>'])
+seq_len=500
+batch_size=32
 
+# def collate_batch(batch):
+#     label_list, text_list = [], []
+#     for (_text, _label) in batch:
+#         label_list.append(_label)
+#         text_list.append(torch.tensor([vocab[token] for token in _text], dtype=torch.long))
+#     label_list = torch.tensor(label_list, dtype=torch.long)
+#     text_list = nn.utils.rnn.pad_sequence(text_list, padding_value=vocab['<pad>'])
+#     return text_list, label_list
 
-from collections import Counter
+# train_dataset = CustomDataset(train_source, train_target)
+# train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_batch)
 
-tokenize = lambda x: x.split()
+# print (train_loader.dataset[0])
 
-def build_vocab(sentences, min_freq=2):
-    word_counts = Counter()
-    for sentence in sentences:
-        for word in tokenize(sentence):
-            word_counts[word] += 1
-    vocab = [word for word, count in word_counts.items() if count >= min_freq]
-    return vocab
-
-def build_dataset(sentences, vocab):
-
-    word2idx = {word: idx for idx, word in enumerate(vocab)}
-    idx2word = {idx: word for idx, word in enumerate(vocab)}
-    sentences = [[word2idx[word] for word in tokenize(sentence)] for sentence in sentences]
-    return sentences, word2idx, idx2word
-
-def pad_sequence(sequences, pad_token=0):
-
-    max_len = max([len(seq) for seq in sequences])
-    return [seq + [pad_token] * (max_len - len(seq)) for seq in sequences]
-
-
-def collate_fn(batch):
-
-    source, target = zip(*batch)
-    source = pad_sequence(source)
-    target = pad_sequence(target)
-    source = torch.LongTensor(source)
-    target = torch.LongTensor(target)
-    return source, target
-
-
+# for i, (x, y) in enumerate(train_loader):
+#     print (x)
+#     print (y)
+    break
